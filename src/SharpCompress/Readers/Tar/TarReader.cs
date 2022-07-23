@@ -34,7 +34,8 @@ namespace SharpCompress.Readers.Tar
             {
                 case CompressionType.BZip2:
                     {
-                        return new BZip2Stream(stream, CompressionMode.Decompress, false);
+                        //return new BZip2Stream(stream, CompressionMode.Decompress, false);
+                        return new BZip2InputStream(stream, false);
                     }
                 case CompressionType.GZip:
                     {
@@ -86,10 +87,10 @@ namespace SharpCompress.Readers.Tar
             }
 
             rewindableStream.Rewind(false);
-            if (BZip2Stream.IsBZip2(rewindableStream))
+            if (BZip2InputStream.IsBZip2(rewindableStream))
             {
                 rewindableStream.Rewind(false);
-                BZip2Stream testStream = new BZip2Stream(rewindableStream, CompressionMode.Decompress, false);
+                BZip2InputStream testStream = new BZip2InputStream(rewindableStream, false);
                 if (TarArchive.IsTarFile(testStream))
                 {
                     rewindableStream.Rewind(true);

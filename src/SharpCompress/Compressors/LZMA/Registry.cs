@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using SharpCompress.Common.SevenZip;
-using SharpCompress.Compressors.BZip2;
+using SharpCompress.Compressors.BZip2Old;
 using SharpCompress.Compressors.Deflate;
 using SharpCompress.Compressors.Filters;
 using SharpCompress.Compressors.LZMA.Utilites;

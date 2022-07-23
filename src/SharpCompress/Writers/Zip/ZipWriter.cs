@@ -12,6 +12,7 @@ using SharpCompress.Compressors.Deflate;
 using SharpCompress.Compressors.LZMA;
 using SharpCompress.Compressors.PPMd;
 using SharpCompress.IO;
+using CRC32 = SharpCompress.Compressors.Deflate.CRC32;
 
 namespace SharpCompress.Writers.Zip
 {
@@ -355,7 +356,8 @@ namespace SharpCompress.Writers.Zip
                         }
                     case ZipCompressionMethod.BZip2:
                         {
-                            return new BZip2Stream(counting, CompressionMode.Compress, false);
+                            //return new BZip2Stream(counting, CompressionMode.Compress, false);
+                            return new BZip2OutputStream(counting, true);
                         }
                     case ZipCompressionMethod.LZMA:
                         {

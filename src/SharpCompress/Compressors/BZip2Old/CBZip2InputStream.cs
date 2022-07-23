@@ -25,7 +25,7 @@ using System.IO;
  * great code.
  */
 
-namespace SharpCompress.Compressors.BZip2
+namespace SharpCompress.Compressors.BZip2Old
 {
     /**
       * An input stream that decompresses from the BZip2 format (with the file
@@ -599,7 +599,7 @@ namespace SharpCompress.Compressors.BZip2
             int i, j, nextSym, limitLast;
             int EOB, groupNo, groupPos;
 
-            limitLast = BZip2Constants.baseBlockSize * blockSize100k;
+            limitLast = BZip2Constants.BASE_BLOCK_SIZE * blockSize100k;
             origPtr = BsGetIntVS(24);
 
             RecvDecodingTables();
@@ -883,7 +883,7 @@ namespace SharpCompress.Compressors.BZip2
                 tPos = tt[tPos];
                 if (rNToGo == 0)
                 {
-                    rNToGo = BZip2Constants.rNums[rTPos];
+                    rNToGo = BZip2Constants.RAND_NUMS[rTPos];
                     rTPos++;
                     if (rTPos == 512)
                     {
@@ -944,7 +944,7 @@ namespace SharpCompress.Compressors.BZip2
                     tPos = tt[tPos];
                     if (rNToGo == 0)
                     {
-                        rNToGo = BZip2Constants.rNums[rTPos];
+                        rNToGo = BZip2Constants.RAND_NUMS[rTPos];
                         rTPos++;
                         if (rTPos == 512)
                         {
@@ -1041,7 +1041,7 @@ namespace SharpCompress.Compressors.BZip2
                 return;
             }
 
-            int n = BZip2Constants.baseBlockSize * newSize100k;
+            int n = BZip2Constants.BASE_BLOCK_SIZE * newSize100k;
             ll8 = new char[n];
             tt = new int[n];
         }

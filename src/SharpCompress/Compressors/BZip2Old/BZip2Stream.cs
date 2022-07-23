@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace SharpCompress.Compressors.BZip2
+namespace SharpCompress.Compressors.BZip2Old
 {
     public sealed class BZip2Stream : Stream
     {

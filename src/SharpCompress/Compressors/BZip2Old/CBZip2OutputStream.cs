@@ -25,7 +25,7 @@ using System.IO;
 
 #nullable disable
 
-namespace SharpCompress.Compressors.BZip2
+namespace SharpCompress.Compressors.BZip2Old
 {
     /**
       * An output stream that compresses into the BZip2 format (with the file
@@ -499,7 +499,7 @@ namespace SharpCompress.Compressors.BZip2
             }
 
             /* 20 is just a paranoia constant */
-            allowableBlockSize = BZip2Constants.baseBlockSize * blockSize100k - 20;
+            allowableBlockSize = BZip2Constants.BASE_BLOCK_SIZE * blockSize100k - 20;
         }
 
         private void EndBlock()
@@ -1554,7 +1554,7 @@ namespace SharpCompress.Compressors.BZip2
             {
                 if (rNToGo == 0)
                 {
-                    rNToGo = (char)BZip2Constants.rNums[rTPos];
+                    rNToGo = (char)BZip2Constants.RAND_NUMS[rTPos];
                     rTPos++;
                     if (rTPos == 512)
                     {
@@ -1769,7 +1769,7 @@ namespace SharpCompress.Compressors.BZip2
 
         private void AllocateCompressStructures()
         {
-            int n = BZip2Constants.baseBlockSize * blockSize100k;
+            int n = BZip2Constants.BASE_BLOCK_SIZE * blockSize100k;
             block = new char[(n + 1 + BZip2Constants.NUM_OVERSHOOT_BYTES)];
             quadrant = new int[(n + BZip2Constants.NUM_OVERSHOOT_BYTES)];
             zptr = new int[n];

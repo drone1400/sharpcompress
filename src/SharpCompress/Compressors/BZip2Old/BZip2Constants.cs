@@ -20,7 +20,7 @@
  * great code.
  */
 
-namespace SharpCompress.Compressors.BZip2
+namespace SharpCompress.Compressors.BZip2Old
 {
     /**
     * Base class for both the compress and decompress classes.
@@ -31,7 +31,7 @@ namespace SharpCompress.Compressors.BZip2
 
     internal class BZip2Constants
     {
-        public const int baseBlockSize = 100000;
+        public const int BASE_BLOCK_SIZE = 100000;
         public const int MAX_ALPHA_SIZE = 258;
         public const int MAX_CODE_LEN = 23;
         public const int RUNA = 0;
@@ -42,7 +42,7 @@ namespace SharpCompress.Compressors.BZip2
         public const int MAX_SELECTORS = (2 + (900000 / G_SIZE));
         public const int NUM_OVERSHOOT_BYTES = 20;
 
-        public static int[] rNums =
+        public static int[] RAND_NUMS =
         {
             619, 720, 127, 481, 931, 816, 813, 233, 566, 247,
             985, 724, 205, 454, 863, 491, 741, 242, 949, 214,

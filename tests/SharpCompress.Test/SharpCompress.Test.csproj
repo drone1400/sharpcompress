@@ -8,6 +8,11 @@
     <PackageId>SharpCompress.Test</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\..\src\SharpCompress\SharpCompress.csproj" />
   </ItemGroup>
