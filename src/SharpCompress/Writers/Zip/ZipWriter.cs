@@ -7,11 +7,12 @@ using SharpCompress.Common;
 using SharpCompress.Common.Zip;
 using SharpCompress.Common.Zip.Headers;
 using SharpCompress.Compressors;
-using SharpCompress.Compressors.BZip2;
 using SharpCompress.Compressors.Deflate;
 using SharpCompress.Compressors.LZMA;
+using SharpCompress.Compressors.PBZip2;
 using SharpCompress.Compressors.PPMd;
 using SharpCompress.IO;
+using CRC32 = SharpCompress.Compressors.Deflate.CRC32;
 
 namespace SharpCompress.Writers.Zip;
 
@@ -367,7 +368,14 @@ public class ZipWriter : AbstractWriter
                 }
                 case ZipCompressionMethod.BZip2:
                 {
-                    return new BZip2Stream(counting, CompressionMode.Compress, false);
+                    int threads = Environment.ProcessorCount;
+                    return new BZip2ParallelOutputStream(counting, threads, true, 9);
+
+                    // NOTE: for some reason, in the 2022 drone-modifications branch,
+                    // i used the non-parallel version of the custom output stream...
+                    // the parallel one seems to pass the tests for ZIP just fine, so now i'm using that instead
+                    // if any issue arises, just use this instead:
+                    //return new BZip2OutputStream(counting, true);
                 }
                 case ZipCompressionMethod.LZMA:
                 {

@@ -2,10 +2,10 @@ using System;
 using System.IO;
 using System.Linq;
 using SharpCompress.Common.SevenZip;
-using SharpCompress.Compressors.BZip2;
 using SharpCompress.Compressors.Deflate;
 using SharpCompress.Compressors.Filters;
 using SharpCompress.Compressors.LZMA.Utilites;
+using SharpCompress.Compressors.PBZip2;
 using SharpCompress.Compressors.PPMd;
 using ZstdSharp;
 
@@ -73,7 +73,7 @@ internal static class DecoderRegistry
             case K_RISCV:
                 return new BCJFilterRISCV(false, inStreams.Single());
             case K_B_ZIP2:
-                return new BZip2Stream(inStreams.Single(), CompressionMode.Decompress, true);
+                return new BZip2InputStream(inStreams.Single(), false); // use custom BZIP2 input stream instead
             case K_PPMD:
                 return new PpmdStream(new PpmdProperties(info), inStreams.Single(), false);
             case K_DEFLATE:

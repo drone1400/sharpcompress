@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using SharpCompress.Common.Zip.Headers;
 using SharpCompress.Compressors;
-using SharpCompress.Compressors.BZip2;
 using SharpCompress.Compressors.Deflate;
 using SharpCompress.Compressors.Deflate64;
 using SharpCompress.Compressors.LZMA;
+using SharpCompress.Compressors.PBZip2;
 using SharpCompress.Compressors.PPMd;
 using SharpCompress.Compressors.Shrink;
 using SharpCompress.Compressors.Xz;
@@ -99,7 +99,7 @@ internal abstract class ZipFilePart : FilePart
             }
             case ZipCompressionMethod.BZip2:
             {
-                return new BZip2Stream(stream, CompressionMode.Decompress, false);
+                return new BZip2InputStream(stream, false); // use custom BZIP2 input stream instead
             }
             case ZipCompressionMethod.LZMA:
             {

@@ -4,9 +4,9 @@ using SharpCompress.Archives;
 using SharpCompress.Archives.Tar;
 using SharpCompress.Common;
 using SharpCompress.Compressors;
-using SharpCompress.Compressors.BZip2;
 using SharpCompress.Compressors.LZMA;
 using SharpCompress.Compressors.Lzw;
+using SharpCompress.Compressors.PBZip2;
 using SharpCompress.Compressors.Xz;
 using SharpCompress.IO;
 using SharpCompress.Readers;
@@ -116,14 +116,10 @@ public class TarFactory
         }
 
         rewindableStream.Rewind(false);
-        if (BZip2Stream.IsBZip2(rewindableStream))
+        if (BZip2InputStream.IsBZip2(rewindableStream))
         {
             rewindableStream.Rewind(false);
-            var testStream = new BZip2Stream(
-                NonDisposingStream.Create(rewindableStream),
-                CompressionMode.Decompress,
-                false
-            );
+            var testStream = new BZip2InputStream(NonDisposingStream.Create(rewindableStream), false); // use custom BZIP2 input stream instead
             if (TarArchive.IsTarFile(testStream))
             {
                 rewindableStream.Rewind(true);

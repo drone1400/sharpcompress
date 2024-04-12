@@ -6,10 +6,10 @@ using SharpCompress.Archives.Tar;
 using SharpCompress.Common;
 using SharpCompress.Common.Tar;
 using SharpCompress.Compressors;
-using SharpCompress.Compressors.BZip2;
 using SharpCompress.Compressors.Deflate;
 using SharpCompress.Compressors.LZMA;
 using SharpCompress.Compressors.Lzw;
+using SharpCompress.Compressors.PBZip2;
 using SharpCompress.Compressors.Xz;
 using SharpCompress.IO;
 
@@ -33,7 +33,7 @@ public class TarReader : AbstractReader<TarEntry, TarVolume>
         var stream = base.RequestInitialStream();
         return compressionType switch
         {
-            CompressionType.BZip2 => new BZip2Stream(stream, CompressionMode.Decompress, false),
+            CompressionType.BZip2 => new BZip2InputStream(stream, false), // use custom BZIP2 input stream instead
             CompressionType.GZip => new GZipStream(stream, CompressionMode.Decompress),
             CompressionType.LZip => new LZipStream(stream, CompressionMode.Decompress),
             CompressionType.Xz => new XZStream(stream),
@@ -70,10 +70,10 @@ public class TarReader : AbstractReader<TarEntry, TarVolume>
         }
 
         rewindableStream.Rewind(false);
-        if (BZip2Stream.IsBZip2(rewindableStream))
+        if (BZip2InputStream.IsBZip2(rewindableStream))
         {
             rewindableStream.Rewind(false);
-            var testStream = new BZip2Stream(rewindableStream, CompressionMode.Decompress, false);
+            var testStream = new BZip2InputStream(rewindableStream, false); // use custom BZIP2 input stream instead
             if (TarArchive.IsTarFile(testStream))
             {
                 rewindableStream.Rewind(true);

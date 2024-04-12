@@ -3,9 +3,9 @@ using System.IO;
 using SharpCompress.Common;
 using SharpCompress.Common.Tar.Headers;
 using SharpCompress.Compressors;
-using SharpCompress.Compressors.BZip2;
 using SharpCompress.Compressors.Deflate;
 using SharpCompress.Compressors.LZMA;
+using SharpCompress.Compressors.PBZip2;
 using SharpCompress.IO;
 
 namespace SharpCompress.Writers.Tar;
@@ -34,7 +34,9 @@ public class TarWriter : AbstractWriter
             case CompressionType.BZip2:
 
                 {
-                    destination = new BZip2Stream(destination, CompressionMode.Compress, false);
+                    // use custom parallel BZIP2 instead
+                    int threads = Environment.ProcessorCount;
+                    destination = new BZip2ParallelOutputStream(destination, threads, true, 9);
                 }
                 break;
             case CompressionType.GZip:
@@ -111,9 +113,14 @@ public class TarWriter : AbstractWriter
             }
             switch (OutputStream)
             {
-                case BZip2Stream b:
+                case BZip2ParallelOutputStream b:
                 {
-                    b.Finish();
+                    b.Close();
+                    break;
+                }
+                case BZip2OutputStream b:
+                {
+                    b.Close();
                     break;
                 }
                 case LZipStream l:
