@@ -193,7 +193,7 @@ public class ZipArchiveTests : ArchiveTests
         using (var archive = ZipArchive.Open(unmodified))
         {
             var entry = archive.Entries.Single(x =>
-                x.Key.EndsWith("jpg", StringComparison.OrdinalIgnoreCase)
+                x.Key.NotNull().EndsWith("jpg", StringComparison.OrdinalIgnoreCase)
             );
             archive.RemoveEntry(entry);
 
@@ -249,16 +249,18 @@ public class ZipArchiveTests : ArchiveTests
         var scratchPath = Path.Combine(TEST_ARCHIVES_PATH, "Zip.deflate.noEmptyDirs.zip");
 
         using var vfs = (ZipArchive)ArchiveFactory.Open(scratchPath);
-        var e = vfs.Entries.First(v => v.Key.EndsWith("jpg", StringComparison.OrdinalIgnoreCase));
+        var e = vfs.Entries.First(v =>
+            v.Key.NotNull().EndsWith("jpg", StringComparison.OrdinalIgnoreCase)
+        );
         vfs.RemoveEntry(e);
         Assert.Null(
             vfs.Entries.FirstOrDefault(v =>
-                v.Key.EndsWith("jpg", StringComparison.OrdinalIgnoreCase)
+                v.Key.NotNull().EndsWith("jpg", StringComparison.OrdinalIgnoreCase)
             )
         );
         Assert.Null(
             ((IArchive)vfs).Entries.FirstOrDefault(v =>
-                v.Key.EndsWith("jpg", StringComparison.OrdinalIgnoreCase)
+                v.Key.NotNull().EndsWith("jpg", StringComparison.OrdinalIgnoreCase)
             )
         );
     }
@@ -394,12 +396,12 @@ public class ZipArchiveTests : ArchiveTests
             archive.AddAllFromDirectory(SCRATCH_FILES_PATH);
             archive.RemoveEntry(
                 archive.Entries.Single(x =>
-                    x.Key.EndsWith("jpg", StringComparison.OrdinalIgnoreCase)
+                    x.Key.NotNull().EndsWith("jpg", StringComparison.OrdinalIgnoreCase)
                 )
             );
             Assert.Null(
                 archive.Entries.FirstOrDefault(x =>
-                    x.Key.EndsWith("jpg", StringComparison.OrdinalIgnoreCase)
+                    x.Key.NotNull().EndsWith("jpg", StringComparison.OrdinalIgnoreCase)
                 )
             );
         }
@@ -646,7 +648,7 @@ public class ZipArchiveTests : ArchiveTests
 
         Assert.Equal(199, len1);
 
-#if !NETFRAMEWORK && !NETSTANDARD2_0
+#if !NETFRAMEWORK
         var len2 = 0;
         var buffer2 = new byte[firstEntry.Size + 256];
 

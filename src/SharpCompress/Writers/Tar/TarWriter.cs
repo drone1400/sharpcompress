@@ -32,7 +32,6 @@ public class TarWriter : AbstractWriter
             case CompressionType.None:
                 break;
             case CompressionType.BZip2:
-
                 {
                     // use custom parallel BZIP2 instead
                     int threads = Environment.ProcessorCount;
@@ -40,13 +39,11 @@ public class TarWriter : AbstractWriter
                 }
                 break;
             case CompressionType.GZip:
-
                 {
                     destination = new GZipStream(destination, CompressionMode.Compress);
                 }
                 break;
             case CompressionType.LZip:
-
                 {
                     destination = new LZipStream(destination, CompressionMode.Compress);
                 }
@@ -58,7 +55,7 @@ public class TarWriter : AbstractWriter
                 );
             }
         }
-        InitalizeStream(destination);
+        InitializeStream(destination);
     }
 
     public override void Write(string filename, Stream source, DateTime? modificationTime) =>

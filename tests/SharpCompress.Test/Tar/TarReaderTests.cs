@@ -79,7 +79,7 @@ public class TarReaderTests : ReaderTests
                     {
                         Directory.CreateDirectory(destdir);
                     }
-                    var destinationFileName = Path.Combine(destdir, file);
+                    var destinationFileName = Path.Combine(destdir, file.NotNull());
 
                     using var fs = File.OpenWrite(destinationFileName);
                     entryStream.TransferTo(fs);
@@ -105,7 +105,7 @@ public class TarReaderTests : ReaderTests
             {
                 if (!reader.Entry.IsDirectory)
                 {
-                    filePaths.Add(reader.Entry.Key);
+                    filePaths.Add(reader.Entry.Key.NotNull("Entry Key is null"));
                 }
             }
         }
@@ -135,7 +135,7 @@ public class TarReaderTests : ReaderTests
                 Assert.Equal(CompressionType.BZip2, reader.Entry.CompressionType);
                 using var entryStream = reader.OpenEntryStream();
                 entryStream.SkipEntry();
-                names.Add(reader.Entry.Key);
+                names.Add(reader.Entry.Key.NotNull());
             }
         }
         Assert.Equal(3, names.Count);
@@ -172,6 +172,21 @@ public class TarReaderTests : ReaderTests
     public void Tar_Broken_Stream()
     {
         var archiveFullPath = Path.Combine(TEST_ARCHIVES_PATH, "Tar.tar");
+        using Stream stream = File.OpenRead(archiveFullPath);
+        using var reader = ReaderFactory.Open(stream);
+        var memoryStream = new MemoryStream();
+
+        Assert.True(reader.MoveToNextEntry());
+        Assert.True(reader.MoveToNextEntry());
+        reader.WriteEntryTo(memoryStream);
+        stream.Close();
+        Assert.Throws<IncompleteArchiveException>(() => reader.MoveToNextEntry());
+    }
+
+    [Fact]
+    public void Tar_Corrupted()
+    {
+        var archiveFullPath = Path.Combine(TEST_ARCHIVES_PATH, "TarCorrupted.tar");
         using Stream stream = File.OpenRead(archiveFullPath);
         using var reader = ReaderFactory.Open(stream);
         var memoryStream = new MemoryStream();
@@ -224,7 +239,7 @@ public class TarReaderTests : ReaderTests
             {
                 if (reader.Entry.LinkTarget != null)
                 {
-                    var path = Path.Combine(SCRATCH_FILES_PATH, reader.Entry.Key);
+                    var path = Path.Combine(SCRATCH_FILES_PATH, reader.Entry.Key.NotNull());
                     var link = new Mono.Unix.UnixSymbolicLinkInfo(path);
                     if (link.HasContents)
                     {

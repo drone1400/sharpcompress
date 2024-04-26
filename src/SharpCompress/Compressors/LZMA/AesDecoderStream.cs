@@ -20,7 +20,8 @@ internal sealed class AesDecoderStream : DecoderStream2
 
     public AesDecoderStream(Stream input, byte[] info, IPasswordProvider pass, long limit)
     {
-        if (pass.CryptoGetTextPassword() == null)
+        var password = pass.CryptoGetTextPassword();
+        if (password == null)
         {
             throw new SharpCompress.Common.CryptographicException(
                 "Encrypted 7Zip archive has no password specified."
@@ -37,8 +38,8 @@ internal sealed class AesDecoderStream : DecoderStream2
 
         Init(info, out var numCyclesPower, out var salt, out var seed);
 
-        var password = Encoding.Unicode.GetBytes(pass.CryptoGetTextPassword());
-        var key = InitKey(numCyclesPower, salt, password);
+        var passwordBytes = Encoding.Unicode.GetBytes(password);
+        var key = InitKey(numCyclesPower, salt, passwordBytes);
         if (key == null)
         {
             throw new InvalidOperationException("Initialized with null key");
@@ -207,28 +208,6 @@ internal sealed class AesDecoderStream : DecoderStream2
         }
         else
         {
-#if NETSTANDARD2_0
-            using var sha = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-            var counter = new byte[8];
-            var numRounds = 1L << mNumCyclesPower;
-            for (long round = 0; round < numRounds; round++)
-            {
-                sha.AppendData(salt, 0, salt.Length);
-                sha.AppendData(pass, 0, pass.Length);
-                sha.AppendData(counter, 0, 8);
-
-                // This mirrors the counter so we don't have to convert long to byte[] each round.
-                // (It also ensures the counter is little endian, which BitConverter does not.)
-                for (var i = 0; i < 8; i++)
-                {
-                    if (++counter[i] != 0)
-                    {
-                        break;
-                    }
-                }
-            }
-            return sha.GetHashAndReset();
-#else
             using var sha = SHA256.Create();
             var counter = new byte[8];
             var numRounds = 1L << mNumCyclesPower;
@@ -251,7 +230,6 @@ internal sealed class AesDecoderStream : DecoderStream2
 
             sha.TransformFinalBlock(counter, 0, 0);
             return sha.Hash;
-#endif
         }
     }
 
