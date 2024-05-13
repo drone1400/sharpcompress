@@ -9,8 +9,14 @@ public class TarWriterOptions : WriterOptions
     /// </summary>
     public bool FinalizeArchiveOnClose { get; }
 
-    public TarWriterOptions(CompressionType compressionType, bool finalizeArchiveOnClose)
-        : base(compressionType) => FinalizeArchiveOnClose = finalizeArchiveOnClose;
+    public TarHeaderWriteFormat HeaderFormat { get; }
+
+    public TarWriterOptions(CompressionType compressionType, bool finalizeArchiveOnClose, TarHeaderWriteFormat headerFormat = TarHeaderWriteFormat.GnuTar_LongLink)
+        : base(compressionType)
+    {
+        FinalizeArchiveOnClose = finalizeArchiveOnClose;
+        HeaderFormat = headerFormat;
+    }
 
     internal TarWriterOptions(WriterOptions options)
         : this(options.CompressionType, true) => ArchiveEncoding = options.ArchiveEncoding;
