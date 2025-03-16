@@ -16,5 +16,12 @@ public enum CompressionType
     Unknown,
     Deflate64,
     Shrink,
-    Lzw
+    Lzw,
+    Reduce1,
+    Reduce2,
+    Reduce3,
+    Reduce4,
+    Explode,
+    Squeezed,
+    RLE90,
 }
